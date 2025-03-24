@@ -1,6 +1,88 @@
 # Contributing to ACIP
 
-We're excited that you're interested in contributing to the Adaptive Contextual Intelligence Protocol (ACIP)! This document provides guidelines and instructions for contributing to the project.
+First off, thank you for considering contributing to ACIP! It's people like you that make ACIP such a great tool.
+
+## Code of Conduct
+
+By participating in this project, you are expected to uphold our Code of Conduct. Please report unacceptable behavior to [project maintainers].
+
+## How Can I Contribute?
+
+### Reporting Bugs
+
+Before creating bug reports, please check the issue list as you might find out that you don't need to create one. When you are creating a bug report, please include as many details as possible:
+
+* Use a clear and descriptive title
+* Describe the exact steps which reproduce the problem
+* Provide specific examples to demonstrate the steps
+* Describe the behavior you observed after following the steps
+* Explain which behavior you expected to see instead and why
+* Include screenshots or animated GIFs if possible
+
+### Suggesting Enhancements
+
+Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion, please include:
+
+* A clear and descriptive title
+* A detailed description of the proposed functionality
+* Explain why this enhancement would be useful
+* List some other tools or applications where this enhancement exists
+
+### Pull Requests
+
+* Fill in the required template
+* Do not include issue numbers in the PR title
+* Follow the JavaScript/TypeScript styleguide
+* Include thoughtfully-worded, well-structured tests
+* Document new code
+* End all files with a newline
+
+## Development Process
+
+1. Fork the repo
+2. Create a new branch from `main`
+3. Make your changes
+4. Run tests and linting
+5. Submit a pull request
+
+### Setup Development Environment
+
+```bash
+# Clone your fork
+git clone https://github.com/Baozhi888/acip.git
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Run tests
+npm test
+```
+
+### Project Structure
+
+```
+acip/
+├── packages/           # Packages directory
+│   ├── cli/           # CLI package
+│   └── core/          # Core package
+├── docs/              # Documentation
+└── examples/          # Example projects
+```
+
+### Coding Style
+
+* Use TypeScript
+* Follow the existing code style
+* Use meaningful variable names
+* Write comments for complex logic
+* Keep functions small and focused
+
+## License
+
+By contributing, you agree that your contributions will be licensed under its MIT License.
 
 ## Code of Conduct
 

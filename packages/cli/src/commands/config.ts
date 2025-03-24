@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import path from 'path';
+import path from 'node:path';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import Conf from 'conf';
@@ -8,9 +8,20 @@ interface ConfigCommandOptions {
   global: boolean;
 }
 
+// Define the schema type
+interface ConfigSchema {
+  apiKey?: string;
+  defaultModel: string;
+  telemetryEnabled: boolean;
+  userSettings: Record<string, any>;
+}
+
+// Create a type for valid config keys
+type ConfigKey = keyof ConfigSchema;
+
 export default function configCommand(program: Command): void {
   // 创建配置存储实例
-  const config = new Conf({
+  const config = new Conf<ConfigSchema>({
     projectName: 'acip',
     schema: {
       apiKey: {
@@ -31,6 +42,11 @@ export default function configCommand(program: Command): void {
       }
     }
   });
+
+  // Helper function to validate config key
+  function isValidConfigKey(key: string): key is ConfigKey {
+    return ['apiKey', 'defaultModel', 'telemetryEnabled', 'userSettings'].includes(key);
+  }
 
   program
     .command('config')
@@ -61,6 +77,10 @@ export default function configCommand(program: Command): void {
     .option('-g, --global', 'Use global configuration', false)
     .action((key: string, options: ConfigCommandOptions) => {
       try {
+        if (!isValidConfigKey(key)) {
+          console.log(chalk.yellow(`Invalid configuration key: '${key}'`));
+          return;
+        }
         const value = config.get(key);
         if (value === undefined) {
           console.log(chalk.yellow(`Configuration key '${key}' not found.`));
@@ -83,6 +103,11 @@ export default function configCommand(program: Command): void {
     .option('-g, --global', 'Use global configuration', false)
     .action((key: string, value: string, options: ConfigCommandOptions) => {
       try {
+        if (!isValidConfigKey(key)) {
+          console.log(chalk.yellow(`Invalid configuration key: '${key}'`));
+          return;
+        }
+        
         // 尝试解析为JSON，如果失败则保持为字符串
         let parsedValue: any;
         try {
@@ -123,6 +148,11 @@ export default function configCommand(program: Command): void {
     .option('-g, --global', 'Use global configuration', false)
     .action((key: string, options: ConfigCommandOptions) => {
       try {
+        if (!isValidConfigKey(key)) {
+          console.log(chalk.yellow(`Invalid configuration key: '${key}'`));
+          return;
+        }
+        
         if (config.has(key)) {
           config.delete(key);
           console.log(chalk.green(`Configuration '${key}' deleted successfully.`));
