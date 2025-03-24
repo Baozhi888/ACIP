@@ -1,0 +1,152 @@
+{
+  "auth": {
+    "providers": ["local", "oauth"],
+    "tokenExpiry": 3600,
+    "refreshTokenExpiry": 604800,
+    "verificationRequired": true,
+    "mfaEnabled": true,
+    "oauth": {
+      "providers": [
+        {
+          "name": "google",
+          "clientId": "your-client-id",
+          "clientSecret": "your-client-secret",
+          "callbackUrl": "https://your-app.com/auth/google/callback",
+          "scope": ["profile", "email"]
+        },
+        {
+          "name": "github",
+          "clientId": "your-github-client-id",
+          "clientSecret": "your-github-client-secret",
+          "callbackUrl": "https://your-app.com/auth/github/callback",
+          "scope": ["user:email"]
+        }
+      ]
+    },
+    "passwordPolicy": {
+      "minLength": 12,
+      "requireNumbers": true,
+      "requireLowercase": true,
+      "requireUppercase": true,
+      "requireSpecial": true,
+      "maxRepeatingChars": 3,
+      "preventCommonPasswords": true
+    },
+    "sessionOptions": {
+      "maxConcurrentSessions": 5,
+      "extendSessionOnActivity": true,
+      "absoluteTimeout": 2592000
+    }
+  },
+  "accessControl": {
+    "defaultPolicy": "deny",
+    "enableRBAC": true,
+    "enableABAC": true,
+    "contextualFactors": ["time", "location", "device"],
+    "cachePolicies": true,
+    "cacheTimeout": 300,
+    "roles": {
+      "admin": {
+        "description": "System administrator with full access",
+        "permissions": ["*:*"]
+      },
+      "manager": {
+        "description": "Department manager",
+        "permissions": [
+          "users:read",
+          "users:create",
+          "users:update",
+          "reports:*"
+        ]
+      },
+      "user": {
+        "description": "Standard user",
+        "permissions": [
+          "profile:read",
+          "profile:update",
+          "content:read"
+        ]
+      },
+      "guest": {
+        "description": "Guest user with limited access",
+        "permissions": [
+          "content:read"
+        ]
+      }
+    },
+    "resources": {
+      "users": {
+        "description": "User management",
+        "actions": ["create", "read", "update", "delete"]
+      },
+      "reports": {
+        "description": "Analytics reports",
+        "actions": ["create", "read", "export"]
+      },
+      "profile": {
+        "description": "User profile",
+        "actions": ["read", "update"]
+      },
+      "content": {
+        "description": "Application content",
+        "actions": ["read", "create", "update", "delete"]
+      }
+    }
+  },
+  "secureCommunication": {
+    "defaultEncryptionLevel": "high",
+    "autoNegotiateEncryption": true,
+    "encryptMetadata": true,
+    "compressionEnabled": true,
+    "keepAliveInterval": 30000,
+    "maxRetries": 3,
+    "retryDelay": 1000,
+    "certificates": {
+      "ca": "/path/to/ca.pem",
+      "cert": "/path/to/cert.pem",
+      "key": "/path/to/key.pem"
+    }
+  },
+  "privacy": {
+    "defaultPrivacyLevel": "balanced",
+    "consentRequired": true,
+    "dataSensitivityLevels": {
+      "pii": "high",
+      "financial": "high",
+      "health": "high",
+      "preferences": "medium",
+      "usage": "low",
+      "analytics": "low"
+    },
+    "dataRetention": {
+      "logs": 90,
+      "userActivity": 365,
+      "deletedAccounts": 30
+    },
+    "anonymization": {
+      "hashAlgorithm": "sha256",
+      "saltLength": 16
+    },
+    "fields": {
+      "user": {
+        "name": "pii",
+        "email": "pii",
+        "phone": "pii",
+        "address": "pii",
+        "dateOfBirth": "pii",
+        "ssn": "pii",
+        "paymentInfo": "financial",
+        "healthInfo": "health",
+        "preferences": "preferences",
+        "usageStats": "usage"
+      }
+    }
+  },
+  "global": {
+    "debugMode": false,
+    "logLevel": "info",
+    "logFormat": "json",
+    "defaultLanguage": "en",
+    "allowedOrigins": ["https://your-app.com", "https://api.your-app.com"]
+  }
+} 

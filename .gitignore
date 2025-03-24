@@ -1,0 +1,90 @@
+# ACIP Project .gitignore
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Compiled output
+dist/
+build/
+lib/
+out/
+.next/
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# Coverage directory
+coverage/
+.nyc_output/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
+# IDE and editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+.project
+.classpath
+.c9/
+*.launch
+*.swp
+*.swo
+.settings/
+*.code-workspace
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Debug
+.debug/
+debug.log
+
+# Testing
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/cypress/videos/
+/cypress/screenshots/
+
+# Misc
+.cache/
+.temp/
+.tmp/
+temp/
+tmp/
+*.bak
+*.backup
+*~
+
+# Generated documentation
+/docs-generated/
+/api-docs/
+
+# OS specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Project specific
+examples/credentials.json
+config.local.json
