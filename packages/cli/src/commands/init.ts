@@ -6,93 +6,89 @@ import ora from 'ora';
 import { Command } from 'commander';
 import { createProjectStructure } from '../utils/project.js';
 
-export default function initCommand(program: Command) {
+interface InitOptions {
+  typescript: boolean;
+  javascript: boolean;
+  force: boolean;
+  skipPrompts: boolean;
+  template: string;
+}
+
+export default function initCommand(program: Command): void {
   program
     .command('init [projectName]')
     .description('Initialize a new ACIP project')
-    .option('-t, --template <template>', 'Template to use (basic, advanced)', 'basic')
     .option('--typescript', 'Use TypeScript (default)', true)
     .option('--javascript', 'Use JavaScript instead of TypeScript')
-    .option('--no-install', 'Skip package installation')
-    .action(async (projectName, options) => {
-      // 如果没有提供项目名称，提示用户输入
-      if (!projectName) {
-        const answers = await inquirer.prompt([
+    .option('-f, --force', 'Overwrite existing files')
+    .option('--skip-prompts', 'Skip all prompts and use default values')
+    .option('-t, --template <name>', 'Specify a template (default: basic)', 'basic')
+    .action(async (projectName: string | undefined, options: InitOptions) => {
+      let finalProjectName = projectName;
+      let useTypeScript = options.javascript ? false : options.typescript;
+      
+      // 如果没有提供项目名称且没有跳过提示，询问用户
+      if (!finalProjectName && !options.skipPrompts) {
+        const answers = await inquirer.prompt<{ projectName: string }>([
           {
             type: 'input',
             name: 'projectName',
             message: 'What is the name of your project?',
             default: 'my-acip-project',
             validate: (input: string) => {
-              if (/^[a-zA-Z0-9-_]+$/.test(input)) return true;
-              return 'Project name may only include letters, numbers, underscores and hashes.';
+              if (/^[a-z0-9-]+$/.test(input)) return true;
+              return 'Project name must contain only lowercase letters, numbers, and hyphens.';
             }
           }
         ]);
-        projectName = answers.projectName;
+        finalProjectName = answers.projectName;
+      } else if (!finalProjectName) {
+        // 如果跳过提示则使用默认名称
+        finalProjectName = 'my-acip-project';
       }
-
-      const projectPath = path.resolve(process.cwd(), projectName);
-
-      // 检查目录是否已经存在
-      if (fs.existsSync(projectPath)) {
-        const { overwrite } = await inquirer.prompt([
+      
+      // 如果允许提示且没有明确指定JavaScript，询问语言偏好
+      if (!options.skipPrompts && !options.javascript && !options.typescript) {
+        const answers = await inquirer.prompt<{ language: string }>([
           {
-            type: 'confirm',
-            name: 'overwrite',
-            message: `Directory '${projectName}' already exists. Do you want to overwrite it?`,
-            default: false
+            type: 'list',
+            name: 'language',
+            message: 'Which language would you like to use?',
+            choices: [
+              { name: 'TypeScript', value: 'typescript' },
+              { name: 'JavaScript', value: 'javascript' }
+            ],
+            default: 'typescript'
           }
         ]);
-
-        if (!overwrite) {
-          console.log(chalk.yellow('Operation cancelled.'));
-          return;
-        }
-
-        // 清空目录
-        fs.emptyDirSync(projectPath);
+        useTypeScript = answers.language === 'typescript';
       }
-
-      // 使用TypeScript还是JavaScript
-      const useTypeScript = options.javascript ? false : options.typescript;
-
-      // 创建项目
-      const spinner = ora('Creating your ACIP project...').start();
+      
+      // 确定项目路径
+      const projectPath = path.resolve(process.cwd(), finalProjectName);
+      
+      console.log(chalk.blue(`\nCreating a new ACIP project in ${chalk.bold(projectPath)}`));
+      console.log(`Using ${chalk.bold(useTypeScript ? 'TypeScript' : 'JavaScript')}\n`);
       
       try {
+        // 创建项目结构
         await createProjectStructure({
+          projectName: finalProjectName,
           projectPath,
-          template: options.template,
           useTypeScript,
-          projectName
+          template: options.template,
+          force: options.force
         });
-
-        spinner.succeed(`Project created at ${chalk.green(projectPath)}`);
-
-        // 安装依赖
-        if (options.install !== false) {
-          spinner.text = 'Installing dependencies...';
-          spinner.start();
-          
-          // 在这里可以调用npm或yarn安装依赖
-          // 例如: await execa('npm', ['install'], { cwd: projectPath });
-          
-          spinner.succeed('Dependencies installed');
-        }
-
-        // 显示后续步骤
-        console.log(`\n${chalk.bold('Next steps:')}`);
-        console.log(`  cd ${projectName}`);
-        if (options.install === false) {
-          console.log('  npm install');
-        }
+        
+        console.log(chalk.green('\n✅ Project created successfully!'));
+        console.log('\nNext steps:');
+        console.log(`  cd ${finalProjectName}`);
+        console.log('  npm install');
         console.log('  npm run dev\n');
-        console.log(`${chalk.bold('Documentation:')}`);
-        console.log('  https://acip.dev/docs\n');
+        console.log(`To learn more about ACIP, check out the documentation at ${chalk.cyan('https://acip.dev/docs')}`);
       } catch (error) {
-        spinner.fail('Failed to create project');
-        console.error(error);
+        console.error(chalk.red('\n❌ Failed to create project:'), error instanceof Error ? error.message : String(error));
+        process.exit(1);
       }
     });
 } 

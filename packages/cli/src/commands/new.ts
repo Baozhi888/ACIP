@@ -165,14 +165,20 @@ export const ${name.charAt(0).toLowerCase() + name.slice(1)}Config${typeAnnotati
   }
 };
 
-export default function newCommand(program: Command) {
+interface NewCommandOptions {
+  directory: string;
+  ts: boolean;
+  js: boolean;
+}
+
+export default function newCommand(program: Command): void {
   program
     .command('new <type> [name]')
     .description('Create a new resource (component, model, tool, config)')
     .option('-d, --directory <dir>', 'Target directory', '')
     .option('--ts', 'Use TypeScript (default)', true)
     .option('--js', 'Use JavaScript instead of TypeScript')
-    .action(async (type, name, options) => {
+    .action(async (type: string, name: string | undefined, options: NewCommandOptions) => {
       // 验证资源类型
       if (!RESOURCE_TYPES.includes(type)) {
         console.error(chalk.red(`Error: Invalid resource type '${type}'.`));
@@ -182,12 +188,12 @@ export default function newCommand(program: Command) {
       
       // 如果没有提供名称，提示用户输入
       if (!name) {
-        const answers = await inquirer.prompt([
+        const answers = await inquirer.prompt<{ name: string }>([
           {
             type: 'input',
             name: 'name',
             message: `What is the name of your ${type}?`,
-            validate: (input) => {
+            validate: (input: string) => {
               if (/^[A-Z][a-zA-Z0-9]*$/.test(input)) return true;
               return 'Name must start with an uppercase letter and contain only alphanumeric characters.';
             }
@@ -231,7 +237,7 @@ export default function newCommand(program: Command) {
       
       // 检查文件是否已存在
       if (fs.existsSync(filePath)) {
-        const { overwrite } = await inquirer.prompt([
+        const { overwrite } = await inquirer.prompt<{ overwrite: boolean }>([
           {
             type: 'confirm',
             name: 'overwrite',

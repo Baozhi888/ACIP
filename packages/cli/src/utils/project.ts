@@ -7,6 +7,7 @@ interface ProjectOptions {
   template: string;
   useTypeScript: boolean;
   projectName: string;
+  force?: boolean;
 }
 
 /**
