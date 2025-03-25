@@ -36,7 +36,7 @@ async function main() {
     
     // 创建助手
     const assistant = sdk.createAssistant({
-      modelId: 'gpt-4',
+      modelId: 'gpt-4o',
       systemPrompt: '你是一个友好、有用的AI助手，专注于提供简洁明了的回答。你是ACIP（适应性上下文智能协议）的专家，能够解释相关概念和用法。',
       temperature: 0.7,
       maxTokens: 1024,

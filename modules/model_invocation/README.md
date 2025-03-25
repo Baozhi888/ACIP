@@ -163,7 +163,7 @@ const modelInvocation = new ModelInvocationModule({
 
 // Invoke a model with a simple prompt
 const response = await modelInvocation.invoke({
-  model: 'gpt-4',
+  model: 'gpt-4o',
   input: {
     messages: [
       { role: 'system', content: 'You are a helpful assistant.' },
@@ -273,7 +273,7 @@ async function getWeather(params) {
 
 // Invoke model with function calling
 const response = await modelInvocation.invoke({
-  model: 'gpt-4',
+  model: 'gpt-4o',
   input: {
     messages: [
       { role: 'user', content: 'What\'s the weather like in Tokyo today?' }
@@ -294,7 +294,7 @@ console.log('Response with function results:', response.output.message.content);
 ```javascript
 // Process image and text together
 const response = await modelInvocation.invoke({
-  model: 'gpt-4-vision',
+  model: 'gpt-4o-vision',
   input: {
     messages: [
       {
@@ -324,7 +324,7 @@ const chain = modelInvocation.createChain({
   steps: [
     {
       id: 'summarize',
-      model: 'gpt-4',
+      model: 'gpt-4o',
       input: {
         messages: [
           { role: 'system', content: 'Summarize the following text concisely:' },
@@ -334,7 +334,7 @@ const chain = modelInvocation.createChain({
     },
     {
       id: 'translate',
-      model: 'gpt-4',
+      model: 'gpt-4o',
       input: {
         messages: [
           { role: 'system', content: 'Translate the following text to French:' },
@@ -379,7 +379,7 @@ The Model Invocation Module is configured through a `model-invocation.config.jso
       "apiKey": "${OPENAI_API_KEY}",
       "organization": "${OPENAI_ORG_ID}",
       "baseUrl": "https://api.openai.com/v1",
-      "defaultModel": "gpt-4",
+      "defaultModel": "gpt-4o",
       "requestTimeout": 30000
     },
     "anthropic": {
@@ -420,7 +420,7 @@ The Model Invocation Module is configured through a `model-invocation.config.jso
     "enabled": true,
     "ttlSeconds": 3600,
     "maxEntries": 1000,
-    "excludeModels": ["gpt-4-vision"]
+    "excludeModels": ["gpt-4o-vision"]
   },
   "optimization": {
     "requestBatching": {

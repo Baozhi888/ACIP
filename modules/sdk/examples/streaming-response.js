@@ -39,7 +39,7 @@ async function main() {
     
     // 准备请求
     const request = {
-      modelId: 'gpt-4',
+      modelId: 'gpt-4o',
       messages: [
         { 
           role: 'system', 

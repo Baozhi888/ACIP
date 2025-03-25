@@ -19,14 +19,14 @@ require('dotenv').config();
 // 初始化SDK，设置高级配置
 const sdk = acip.init({
   apiKey: process.env.ACIP_API_KEY,
-  defaultModelId: 'gpt-4',
+  defaultModelId: 'gpt-4o',
   
   // 自定义缓存配置
   cacheEnabled: true,
   cacheConfig: {
     maxSize: 200,          // 最多缓存200条结果
     maxAge: 7200,          // 缓存有效期2小时
-    excludeModels: ['gpt-4-vision'],  // 排除特定模型
+    excludeModels: ['gpt-4o-vision'],  // 排除特定模型
     excludePatterns: [     // 排除包含敏感词的请求
       'password', 'secret', 'credential'
     ],
@@ -169,7 +169,7 @@ async function errorHandlingDemo() {
         case 'rate_limit':
           // 模拟速率限制错误 (这里通过一个特殊提示来触发我们的测试环境)
           response = await sdk.modelInvocation.invoke({
-            modelId: 'gpt-4',
+            modelId: 'gpt-4o',
             messages: [{ role: 'user', content: '[SIMULATE_RATE_LIMIT_ERROR] 测试' }]
           });
           break;
@@ -182,7 +182,7 @@ async function errorHandlingDemo() {
           });
           
           response = await timeoutSdk.modelInvocation.invoke({
-            modelId: 'gpt-4',
+            modelId: 'gpt-4o',
             messages: [{ 
               role: 'user', 
               content: '写一篇非常详细的文章，包含至少2000个字...' 
@@ -193,7 +193,7 @@ async function errorHandlingDemo() {
         case 'content_moderation':
           // 模拟内容审核错误
           response = await sdk.modelInvocation.invoke({
-            modelId: 'gpt-4',
+            modelId: 'gpt-4o',
             messages: [{ 
               role: 'user', 
               content: '[SIMULATE_CONTENT_VIOLATION] 测试不当内容' 
@@ -209,7 +209,7 @@ async function errorHandlingDemo() {
           });
           
           response = await sdk.modelInvocation.invoke({
-            modelId: 'gpt-4',
+            modelId: 'gpt-4o',
             messages: [{ 
               role: 'user', 
               content: '[SIMULATE_SERVER_ERROR_WITH_RETRY] 测试自动重试' 
@@ -274,7 +274,7 @@ async function chainOfThoughtDemo() {
   // 第一步 - 问题分解
   console.log('\n步骤 1: 问题分解');
   const decompositionResponse = await sdk.modelInvocation.invoke({
-    modelId: 'gpt-4',
+    modelId: 'gpt-4o',
     messages: [
       { role: 'system', content: '你是一个专业的系统架构分析师。你的任务是将复杂的系统设计问题分解为明确的子问题。只列出子问题，不要提供解决方案。' },
       { role: 'user', content: complexQuestion }
@@ -329,7 +329,7 @@ async function chainOfThoughtDemo() {
   integrationPrompt += `请提供一个整合所有这些组件的完整系统架构设计，包括组件之间的交互和数据流。`;
   
   const finalResponse = await sdk.modelInvocation.invoke({
-    modelId: 'gpt-4',
+    modelId: 'gpt-4o',
     messages: [
       { role: 'system', content: '你是一个高级系统架构师，擅长整合多个子系统设计为一个连贯的整体架构。' },
       { role: 'user', content: integrationPrompt }
@@ -350,9 +350,9 @@ async function chainOfThoughtDemo() {
       metadata: {
         timestamp: new Date().toISOString(),
         modelUsed: {
-          decomposition: 'gpt-4',
+          decomposition: 'gpt-4o',
           solutions: 'gpt-3.5-turbo',
-          integration: 'gpt-4'
+          integration: 'gpt-4o'
         },
         tokenUsage: {
           decomposition: decompositionResponse.metrics.totalTokens,
@@ -449,7 +449,7 @@ async function cacheAndCostOptimizationDemo() {
     sdk.modelInvocation.configure({ costOptimizationEnabled: false });
     
     const baseResponse = await sdk.modelInvocation.invoke({
-      modelId: 'gpt-4',
+      modelId: 'gpt-4o',
       messages: [{ role: 'user', content: testCase.content }]
     });
     
@@ -470,7 +470,7 @@ async function cacheAndCostOptimizationDemo() {
     const savings = ((1 - optimizedCost / baseCost) * 100).toFixed(1);
     const selectedModel = optimizedResponse.model || '(自动选择的模型)';
     
-    console.log(`原始成本: $${baseCost.toFixed(5)} (使用 gpt-4)`);
+    console.log(`原始成本: $${baseCost.toFixed(5)} (使用 gpt-4o)`);
     console.log(`优化成本: $${optimizedCost.toFixed(5)} (使用 ${selectedModel})`);
     console.log(`节省: ${savings}%`);
     console.log(`优化策略: ${optimizedResponse.optimizationApplied || '模型选择'}`);

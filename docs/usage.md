@@ -124,7 +124,7 @@ const modelInvoker = acip.getModule('modelInvocation');
 
 // Invoke a specific model
 const result = await modelInvoker.invoke({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   input: {
     prompt: 'Explain the theory of relativity simply',
     parameters: {

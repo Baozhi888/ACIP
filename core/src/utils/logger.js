@@ -1,13 +1,13 @@
 /**
  * ACIP日志工具
  * 
- * 提供统一的日志记录功能
+ * 统一的日志记录模块，支持不同日志级别和输出格式
  * 
- * @module utils/logger
+ * @module utils
  */
 
 /**
- * 日志级别
+ * 日志级别枚举
  */
 const LogLevel = {
   TRACE: 0,
@@ -16,326 +16,276 @@ const LogLevel = {
   WARN: 3,
   ERROR: 4,
   FATAL: 5,
-  NONE: 6,
-  
-  // 日志级别名称映射
-  toString: function(level) {
-    switch(level) {
-      case this.TRACE: return 'TRACE';
-      case this.DEBUG: return 'DEBUG';
-      case this.INFO: return 'INFO';
-      case this.WARN: return 'WARN';
-      case this.ERROR: return 'ERROR';
-      case this.FATAL: return 'FATAL';
-      case this.NONE: return 'NONE';
-      default: return 'UNKNOWN';
-    }
-  },
-  
-  // 从字符串获取日志级别
-  fromString: function(levelStr) {
-    switch(levelStr.toUpperCase()) {
-      case 'TRACE': return this.TRACE;
-      case 'DEBUG': return this.DEBUG;
-      case 'INFO': return this.INFO;
-      case 'WARN': return this.WARN;
-      case 'ERROR': return this.ERROR;
-      case 'FATAL': return this.FATAL;
-      case 'NONE': return this.NONE;
-      default: return this.INFO;
-    }
-  }
+  NONE: 6
 };
 
 /**
- * 级别名称映射
+ * 默认日志配置
  */
-const LogLevelNames = {
-  [LogLevel.TRACE]: 'TRACE',
-  [LogLevel.DEBUG]: 'DEBUG',
-  [LogLevel.INFO]: 'INFO',
-  [LogLevel.WARN]: 'WARN',
-  [LogLevel.ERROR]: 'ERROR',
-  [LogLevel.FATAL]: 'FATAL',
-  [LogLevel.NONE]: 'NONE'
+const DEFAULT_CONFIG = {
+  level: LogLevel.INFO,
+  colorize: true,
+  timestamp: true,
+  format: 'text',
+  transports: ['console'],
+  contextPadding: 14,
+  dateFormat: 'YYYY-MM-DD HH:mm:ss.SSS'
+};
+
+// 全局日志配置
+let globalConfig = { ...DEFAULT_CONFIG };
+
+/**
+ * 设置全局日志配置
+ * @param {Object} config - 日志配置选项
+ */
+function configureLogger(config = {}) {
+  globalConfig = {
+    ...globalConfig,
+    ...config
+  };
+  
+  // 确保日志级别有效
+  if (typeof globalConfig.level === 'string') {
+    globalConfig.level = LogLevel[globalConfig.level.toUpperCase()] || LogLevel.INFO;
+  }
+}
+
+/**
+ * ANSI 颜色代码
+ */
+const COLORS = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  dim: '\x1b[2m',
+  underscore: '\x1b[4m',
+  blink: '\x1b[5m',
+  reverse: '\x1b[7m',
+  hidden: '\x1b[8m',
+  
+  black: '\x1b[30m',
+  red: '\x1b[31m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  magenta: '\x1b[35m',
+  cyan: '\x1b[36m',
+  white: '\x1b[37m',
+  
+  bgBlack: '\x1b[40m',
+  bgRed: '\x1b[41m',
+  bgGreen: '\x1b[42m',
+  bgYellow: '\x1b[43m',
+  bgBlue: '\x1b[44m',
+  bgMagenta: '\x1b[45m',
+  bgCyan: '\x1b[46m',
+  bgWhite: '\x1b[47m'
 };
 
 /**
- * 将字符串日志级别转换为数字
- * @param {string} levelName - 日志级别名称
- * @returns {number} 日志级别数值
+ * 日志级别对应的颜色和标签
  */
-function getLevelValue(levelName) {
-  if (typeof levelName === 'number') {
-    return levelName;
-  }
+const LEVEL_STYLES = {
+  [LogLevel.TRACE]: { color: COLORS.dim + COLORS.white, label: 'TRACE' },
+  [LogLevel.DEBUG]: { color: COLORS.cyan, label: 'DEBUG' },
+  [LogLevel.INFO]: { color: COLORS.green, label: 'INFO' },
+  [LogLevel.WARN]: { color: COLORS.yellow, label: 'WARN' },
+  [LogLevel.ERROR]: { color: COLORS.red, label: 'ERROR' },
+  [LogLevel.FATAL]: { color: COLORS.bright + COLORS.red, label: 'FATAL' }
+};
+
+/**
+ * 格式化日期
+ * @private
+ * @param {Date} date - 日期对象
+ * @param {string} format - 格式字符串
+ * @returns {string} 格式化的日期字符串
+ */
+function formatDate(date, format) {
+  const pad = (num, size = 2) => String(num).padStart(size, '0');
   
-  const name = (levelName || '').toUpperCase();
+  const tokens = {
+    YYYY: date.getFullYear(),
+    MM: pad(date.getMonth() + 1),
+    DD: pad(date.getDate()),
+    HH: pad(date.getHours()),
+    mm: pad(date.getMinutes()),
+    ss: pad(date.getSeconds()),
+    SSS: pad(date.getMilliseconds(), 3)
+  };
   
-  for (const [value, label] of Object.entries(LogLevelNames)) {
-    if (label === name) {
-      return parseInt(value, 10);
+  return format.replace(/YYYY|MM|DD|HH|mm|ss|SSS/g, match => tokens[match]);
+}
+
+/**
+ * 创建日志记录器
+ * @param {string} context - 日志上下文名称（例如模块名）
+ * @param {Object} [options] - 此记录器的特定选项
+ * @returns {Object} 日志记录器对象
+ */
+function createLogger(context, options = {}) {
+  const config = {
+    ...globalConfig,
+    ...options
+  };
+  
+  // 格式化日志消息
+  function formatLogMessage(level, message, ...args) {
+    if (level < config.level) {
+      return null;
     }
-  }
-  
-  return LogLevel.INFO; // 默认
-}
-
-/**
- * 检查是否应该记录给定级别的日志
- * @param {number} messageLevel - 消息级别
- * @param {number} loggerLevel - 日志记录器级别
- * @returns {boolean} 是否应该记录
- */
-function shouldLog(messageLevel, loggerLevel) {
-  return messageLevel >= loggerLevel;
-}
-
-/**
- * 格式化日志消息
- * @param {number} level - 日志级别
- * @param {string} message - 日志消息
- * @param {Object} [meta] - 附加元数据
- * @returns {string} 格式化后的日志消息
- */
-function formatLogMessage(level, message, meta = {}) {
-  const timestamp = new Date().toISOString();
-  const levelName = LogLevel.toString(level);
-  
-  let formattedMeta = '';
-  
-  if (Object.keys(meta).length > 0) {
-    try {
-      formattedMeta = ` ${JSON.stringify(meta)}`;
-    } catch (e) {
-      formattedMeta = ' [无法序列化元数据]';
-    }
-  }
-  
-  return `[${timestamp}] [${levelName}] ${message}${formattedMeta}`;
-}
-
-/**
- * 创建控制台日志处理器
- * @returns {Function} 日志处理器函数
- */
-function createConsoleHandler() {
-  return (level, message, meta) => {
-    const formattedMessage = formatLogMessage(level, message, meta);
     
-    switch (level) {
-      case LogLevel.TRACE:
-      case LogLevel.DEBUG:
-        console.debug(formattedMessage);
-        break;
-      case LogLevel.INFO:
-        console.info(formattedMessage);
-        break;
-      case LogLevel.WARN:
-        console.warn(formattedMessage);
-        break;
-      case LogLevel.ERROR:
-      case LogLevel.FATAL:
-        console.error(formattedMessage);
-        break;
-      default:
-        break;
+    const timestamp = config.timestamp 
+      ? formatDate(new Date(), config.dateFormat) + ' '
+      : '';
+      
+    const levelInfo = LEVEL_STYLES[level] || LEVEL_STYLES[LogLevel.INFO];
+    const levelStr = levelInfo.label;
+    
+    const contextStr = context ? `[${context}]` : '';
+    const paddedContext = contextStr.padEnd(config.contextPadding, ' ');
+    
+    let formatted = `${timestamp}${levelStr} ${paddedContext} ${message}`;
+    
+    // 处理额外参数
+    if (args.length > 0) {
+      // 如果args是对象，尝试格式化为JSON
+      try {
+        const argsStr = args.map(arg => {
+          if (typeof arg === 'object' && arg !== null) {
+            return JSON.stringify(arg);
+          }
+          return String(arg);
+        }).join(' ');
+        
+        formatted += ' ' + argsStr;
+      } catch (err) {
+        formatted += ' ' + args.join(' ');
+      }
+    }
+    
+    // 应用颜色
+    if (config.colorize) {
+      return `${levelInfo.color}${formatted}${COLORS.reset}`;
+    }
+    
+    return formatted;
+  }
+  
+  // 输出日志信息
+  function logMessage(level, message, ...args) {
+    const formatted = formatLogMessage(level, message, ...args);
+    if (!formatted) return;
+    
+    // 根据配置将日志发送到不同的目标
+    config.transports.forEach(transport => {
+      switch (transport) {
+        case 'console':
+          console.log(formatted);
+          break;
+        case 'file':
+          // 实际应用中可实现文件日志
+          break;
+        case 'remote':
+          // 实际应用中可实现远程日志
+          break;
+        default:
+          // 自定义传输方式
+          if (typeof transport === 'function') {
+            transport(level, formatted, { context, message, args });
+          }
+      }
+    });
+  }
+  
+  return {
+    /**
+     * 获取当前日志记录器的上下文
+     * @returns {string} 上下文名称
+     */
+    getContext() {
+      return context;
+    },
+    
+    /**
+     * 获取当前配置
+     * @returns {Object} 日志配置
+     */
+    getConfig() {
+      return { ...config };
+    },
+    
+    /**
+     * 记录跟踪级别消息
+     * @param {string} message - 日志消息
+     * @param {...any} args - 附加参数
+     */
+    trace(message, ...args) {
+      logMessage(LogLevel.TRACE, message, ...args);
+    },
+    
+    /**
+     * 记录调试级别消息
+     * @param {string} message - 日志消息
+     * @param {...any} args - 附加参数
+     */
+    debug(message, ...args) {
+      logMessage(LogLevel.DEBUG, message, ...args);
+    },
+    
+    /**
+     * 记录信息级别消息
+     * @param {string} message - 日志消息
+     * @param {...any} args - 附加参数
+     */
+    info(message, ...args) {
+      logMessage(LogLevel.INFO, message, ...args);
+    },
+    
+    /**
+     * 记录警告级别消息
+     * @param {string} message - 日志消息
+     * @param {...any} args - 附加参数
+     */
+    warn(message, ...args) {
+      logMessage(LogLevel.WARN, message, ...args);
+    },
+    
+    /**
+     * 记录错误级别消息
+     * @param {string} message - 日志消息
+     * @param {...any} args - 附加参数
+     */
+    error(message, ...args) {
+      logMessage(LogLevel.ERROR, message, ...args);
+    },
+    
+    /**
+     * 记录致命错误级别消息
+     * @param {string} message - 日志消息
+     * @param {...any} args - 附加参数
+     */
+    fatal(message, ...args) {
+      logMessage(LogLevel.FATAL, message, ...args);
+    },
+    
+    /**
+     * 创建带有子上下文的新日志记录器
+     * @param {string} subContext - 子上下文名称
+     * @returns {Object} 子日志记录器
+     */
+    createSubLogger(subContext) {
+      return createLogger(`${context}:${subContext}`, config);
     }
   };
 }
 
-/**
- * 日志记录器类
- */
-class Logger {
-  /**
-   * 创建日志记录器实例
-   * @param {Object} options - 日志选项
-   * @param {string|number} [options.level='info'] - 日志级别
-   * @param {string} [options.name='ACIP'] - 日志记录器名称
-   * @param {Function[]} [options.handlers] - 日志处理器数组
-   * @param {Object} [options.meta={}] - 默认元数据
-   */
-  constructor(options = {}) {
-    this.level = getLevelValue(options.level || 'info');
-    this.name = options.name || 'ACIP';
-    this.handlers = options.handlers || [createConsoleHandler()];
-    this.defaultMeta = options.meta || {};
-    
-    // 绑定日志方法
-    this.trace = this.trace.bind(this);
-    this.debug = this.debug.bind(this);
-    this.info = this.info.bind(this);
-    this.warn = this.warn.bind(this);
-    this.error = this.error.bind(this);
-    this.fatal = this.fatal.bind(this);
-    this.log = this.log.bind(this);
-    this.setLevel = this.setLevel.bind(this);
-    this.addHandler = this.addHandler.bind(this);
-    this.child = this.child.bind(this);
-  }
-
-  /**
-   * 记录跟踪级别日志
-   * @param {string} message - 日志消息
-   * @param {Object} [meta] - 附加元数据
-   */
-  trace(message, meta = {}) {
-    this.log(LogLevel.TRACE, message, meta);
-  }
-
-  /**
-   * 记录调试级别日志
-   * @param {string} message - 日志消息
-   * @param {Object} [meta] - 附加元数据
-   */
-  debug(message, meta = {}) {
-    this.log(LogLevel.DEBUG, message, meta);
-  }
-
-  /**
-   * 记录信息级别日志
-   * @param {string} message - 日志消息
-   * @param {Object} [meta] - 附加元数据
-   */
-  info(message, meta = {}) {
-    this.log(LogLevel.INFO, message, meta);
-  }
-
-  /**
-   * 记录警告级别日志
-   * @param {string} message - 日志消息
-   * @param {Object} [meta] - 附加元数据
-   */
-  warn(message, meta = {}) {
-    this.log(LogLevel.WARN, message, meta);
-  }
-
-  /**
-   * 记录错误级别日志
-   * @param {string} message - 日志消息
-   * @param {Object|Error} [metaOrError] - 附加元数据或错误对象
-   */
-  error(message, metaOrError = {}) {
-    let meta = metaOrError;
-    
-    // 处理错误对象
-    if (metaOrError instanceof Error) {
-      meta = {
-        error: {
-          name: metaOrError.name,
-          message: metaOrError.message,
-          stack: metaOrError.stack
-        },
-        ...meta
-      };
-    }
-    
-    this.log(LogLevel.ERROR, message, meta);
-  }
-
-  /**
-   * 记录致命错误级别日志
-   * @param {string} message - 日志消息
-   * @param {Object|Error} [metaOrError] - 附加元数据或错误对象
-   */
-  fatal(message, metaOrError = {}) {
-    let meta = metaOrError;
-    
-    // 处理错误对象
-    if (metaOrError instanceof Error) {
-      meta = {
-        error: {
-          name: metaOrError.name,
-          message: metaOrError.message,
-          stack: metaOrError.stack
-        },
-        ...meta
-      };
-    }
-    
-    this.log(LogLevel.FATAL, message, meta);
-  }
-
-  /**
-   * 记录任意级别的日志
-   * @param {number} level - 日志级别
-   * @param {string} message - 日志消息
-   * @param {Object} [meta] - 附加元数据
-   */
-  log(level, message, meta = {}) {
-    if (!shouldLog(level, this.level)) {
-      return;
-    }
-    
-    const combinedMeta = {
-      ...this.defaultMeta,
-      ...meta,
-      logger: this.name
-    };
-    
-    for (const handler of this.handlers) {
-      try {
-        handler(level, message, combinedMeta);
-      } catch (error) {
-        console.error(`日志处理器错误: ${error.message}`);
-      }
-    }
-  }
-
-  /**
-   * 设置日志级别
-   * @param {string|number} level - 新的日志级别
-   */
-  setLevel(level) {
-    this.level = getLevelValue(level);
-  }
-
-  /**
-   * 添加日志处理器
-   * @param {Function} handler - 日志处理器函数
-   */
-  addHandler(handler) {
-    if (typeof handler === 'function') {
-      this.handlers.push(handler);
-    }
-  }
-
-  /**
-   * 创建子日志记录器
-   * @param {string} name - 子日志记录器名称
-   * @param {Object} [meta] - 附加元数据
-   * @returns {Logger} 子日志记录器实例
-   */
-  child(name, meta = {}) {
-    return new Logger({
-      level: this.level,
-      name: `${this.name}:${name}`,
-      handlers: this.handlers,
-      meta: {
-        ...this.defaultMeta,
-        ...meta
-      }
-    });
-  }
-}
-
-/**
- * 创建默认日志记录器
- * @param {Object} [options] - 日志选项
- * @returns {Logger} 日志记录器实例
- */
-function createLogger(options = {}) {
-  return new Logger(options);
-}
-
-// 创建并导出默认日志记录器
-const defaultLogger = createLogger();
+// 创建默认日志记录器
+const defaultLogger = createLogger('ACIP');
 
 module.exports = {
-  Logger,
-  createLogger,
-  defaultLogger,
   LogLevel,
-  LogLevelNames
+  createLogger,
+  configureLogger,
+  defaultLogger
 }; 

@@ -209,7 +209,7 @@ function createEnvExample(): string {
 ACIP_API_KEY=your_api_key_here
 
 # 默认AI模型ID
-DEFAULT_MODEL_ID=gpt-4
+DEFAULT_MODEL_ID=gpt-4o
 
 # 应用配置
 APP_PORT=3000
@@ -260,7 +260,7 @@ ${useTypeScript ? 'async function main(): Promise<void> {' : 'async function mai
   // 初始化ACIP SDK
   const acip = new ACIP({
     apiKey: process.env.ACIP_API_KEY,
-    defaultModelId: process.env.DEFAULT_MODEL_ID || 'gpt-4'
+    defaultModelId: process.env.DEFAULT_MODEL_ID || 'gpt-4o'
   });
 
   // 简单的模型调用示例
@@ -292,7 +292,7 @@ ${useTypeScript ? 'async function main(): Promise<void> {' : 'async function mai
   // 初始化ACIP SDK
   const acip = new ACIP({
     apiKey: process.env.ACIP_API_KEY,
-    defaultModelId: process.env.DEFAULT_MODEL_ID || 'gpt-4',
+    defaultModelId: process.env.DEFAULT_MODEL_ID || 'gpt-4o',
     cacheEnabled: true,
     logger: {
       level: 'info'
@@ -350,7 +350,7 @@ export const appConfig${typeAnnotation} = {
 
 // AI模型配置
 export const modelConfig${typeAnnotation} = {
-  defaultModelId: process.env.DEFAULT_MODEL_ID || 'gpt-4',
+  defaultModelId: process.env.DEFAULT_MODEL_ID || 'gpt-4o',
   fallbackModelId: 'gpt-3.5-turbo',
   maxTokens: 8192,
   temperature: 0.7,
@@ -410,7 +410,7 @@ export function createAssistant(acip${useTypeScript ? ': ACIP' : ''}) {
     ],
     model: {
       provider: 'openai',
-      modelId: 'gpt-4'
+      modelId: 'gpt-4o'
     }
   });
 

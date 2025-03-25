@@ -103,7 +103,7 @@ interface InvokeResponse {
 ```javascript
 // 基本模型调用示例
 const response = await sdk.modelInvocation.invoke({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   messages: [
     { role: 'system', content: '你是一个有用的助手。' },
     { role: 'user', content: '解释量子计算的基本原理' }
@@ -120,7 +120,7 @@ console.log(response.content);
 ```javascript
 try {
   const response = await sdk.modelInvocation.invoke({
-    modelId: 'gpt-4',
+    modelId: 'gpt-4o',
     messages: [
       { role: 'user', content: '解释相对论' }
     ]
@@ -144,7 +144,7 @@ try {
 
 ```javascript
 const response = await sdk.modelInvocation.invoke({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   messages: [
     { role: 'user', content: '用Python写一个快速排序算法' }
   ],
@@ -172,7 +172,7 @@ const response = await sdk.modelInvocation.invoke({
 ```javascript
 // 处理包含工具调用的响应
 const response = await sdk.modelInvocation.invoke({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   messages: [
     { role: 'system', content: '你是一个有用的助手，可以使用工具。' },
     { role: 'user', content: '北京现在的天气怎么样？' }
@@ -207,6 +207,7 @@ if (response.toolCalls && response.toolCalls.length > 0) {
   console.log(`- 参数: ${toolCall.function.arguments}`);
   
   // 处理工具调用并提供结果
+  
   // ...
 }
 ```

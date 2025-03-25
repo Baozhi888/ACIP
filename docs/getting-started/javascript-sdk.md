@@ -42,7 +42,7 @@ const sdk = acip.init({
 // 高级初始化
 const advancedSdk = acip.init({
   apiKey: process.env.ACIP_API_KEY,
-  defaultModelId: 'gpt-4',
+  defaultModelId: 'gpt-4o',
   cacheEnabled: true,
   rateLimitingEnabled: true,
   costOptimizationEnabled: true,
@@ -64,7 +64,7 @@ SDK初始化时支持以下配置选项：
 | 选项 | 类型 | 默认值 | 描述 |
 |------|------|-------|------|
 | `apiKey` | string | null | API密钥，用于身份验证 |
-| `defaultModelId` | string | 'gpt-4' | 默认使用的AI模型 |
+| `defaultModelId` | string | 'gpt-4o' | 默认使用的AI模型 |
 | `cacheEnabled` | boolean | false | 是否启用响应缓存 |
 | `cacheMaxSize` | number | 100 | 缓存的最大条目数 |
 | `cacheMaxAge` | number | 3600 | 缓存条目的最大生命周期（秒） |
@@ -83,7 +83,7 @@ ModelInvocation模块是SDK的核心，提供与AI模型交互的功能。
 ```javascript
 // 基本模型调用
 const response = await sdk.modelInvocation.invoke({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   messages: [
     { role: 'system', content: '你是一个有用的助手。' },
     { role: 'user', content: '解释量子计算的基本原理' }
@@ -100,7 +100,7 @@ console.log(response.content);
 ```javascript
 // 创建流式响应
 const stream = await sdk.modelInvocation.createStream({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   messages: [
     { role: 'system', content: '你是一个有用的助手。' },
     { role: 'user', content: '解释量子计算的基本原理' }
@@ -157,7 +157,7 @@ ACIP提供了一个Assistant类，简化了创建对话式AI体验的过程。
 ```javascript
 // 创建助手
 const assistant = sdk.createAssistant({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   systemPrompt: '你是一个专业的编程助手，擅长解答编程相关问题。',
   name: '编程助手'
 });
@@ -177,7 +177,7 @@ console.log(followUp.content);
 
 | 选项 | 类型 | 默认值 | 描述 |
 |------|------|-------|------|
-| `modelId` | string | 'gpt-4' | 使用的AI模型ID |
+| `modelId` | string | 'gpt-4o' | 使用的AI模型ID |
 | `systemPrompt` | string | '你是一个有用的AI助手。' | 系统提示，定义助手的角色和行为 |
 | `temperature` | number | 0.7 | 响应的随机性（0-1） |
 | `maxTokens` | number | 2048 | 响应的最大Token数 |
@@ -257,7 +257,7 @@ const tools = [
 
 // 创建带工具的助手
 const assistant = sdk.createAssistant({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   systemPrompt: '你是一个购物助手，可以查询产品信息。',
   tools: tools
 });
@@ -515,7 +515,7 @@ async function batchProcess(prompts) {
     const batchResults = await Promise.all(
       batch.map(prompt => 
         sdk.modelInvocation.invoke({
-          modelId: 'gpt-4',
+          modelId: 'gpt-4o',
           messages: [{ role: 'user', content: prompt }]
         })
       )
@@ -558,7 +558,7 @@ async function processingChain(initialPrompt) {
   
   // 第二步：基于概要生成详细内容
   const detailedResponse = await sdk.modelInvocation.invoke({
-    modelId: 'gpt-4',
+    modelId: 'gpt-4o',
     messages: [
       { role: 'system', content: '基于提供的概要生成详细内容。' },
       { role: 'user', content: `基于以下概要生成一篇详细的文章：\n\n${summary}` }
@@ -586,7 +586,7 @@ const sdk = acip.init({
   cacheConfig: {
     maxSize: 200,          // 最多缓存200条结果
     maxAge: 7200,          // 缓存有效期2小时
-    excludeModels: ['gpt-4-vision'],  // 排除特定模型
+    excludeModels: ['gpt-4o-vision'],  // 排除特定模型
     excludePatterns: [     // 排除包含敏感词的请求
       'password', 'secret', 'credential'
     ],
@@ -666,7 +666,7 @@ const messages: ChatMessage[] = [
 // 使用类型化的API
 async function sendMessage() {
   const response = await sdk.modelInvocation.invoke({
-    modelId: 'gpt-4',
+    modelId: 'gpt-4o',
     messages: messages
   });
   
@@ -685,7 +685,7 @@ async function sendMessage() {
 ### 请求优化
 
 - 保持提示简短明确，减少不必要的上下文
-- 使用适当的模型 - 不是所有任务都需要GPT-4
+- 使用适当的模型 - 不是所有任务都需要gpt-4o
 - 设置合理的`max_tokens`值，避免生成过长的响应
 
 ### 流式响应

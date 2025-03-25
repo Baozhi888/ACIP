@@ -29,7 +29,7 @@ async function main() {
     const sdk = acip.init({ 
       apiKey,
       // 可选配置
-      defaultModelId: 'gpt-4',
+      defaultModelId: 'gpt-4o',
       cacheEnabled: true
     });
     
@@ -41,7 +41,7 @@ async function main() {
     
     // 准备请求
     const request = {
-      modelId: 'gpt-4', // 可以使用不同的模型
+      modelId: 'gpt-4o', // 可以使用不同的模型
       messages: [
         { 
           role: 'system', 

@@ -11,7 +11,7 @@ require('dotenv').config(); // 加载.env文件中的环境变量
 // 初始化SDK
 const sdk = acip.init({
   apiKey: process.env.ACIP_API_KEY,
-  defaultModelId: 'gpt-4',
+  defaultModelId: 'gpt-4o',
   cacheEnabled: true,
   logger: {
     level: 'info',
@@ -65,7 +65,7 @@ async function streamingExample() {
     console.log('模型响应: ');
     
     const stream = await sdk.modelInvocation.createStream({
-      modelId: 'gpt-4',
+      modelId: 'gpt-4o',
       messages: [
         { role: 'system', content: '你是一个专业的科学解释者，善于用通俗易懂的语言解释复杂概念。' },
         { role: 'user', content: '详细解释量子计算的工作原理和潜在应用' }
@@ -105,7 +105,7 @@ async function assistantExample() {
     
     // 创建助手实例
     const assistant = sdk.createAssistant({
-      modelId: 'gpt-4',
+      modelId: 'gpt-4o',
       systemPrompt: '你是一个编程专家，擅长解答与JavaScript编程相关的问题，并提供简洁、高效的代码示例。',
       name: 'JavaScript助手',
       temperature: 0.3,
@@ -175,7 +175,7 @@ async function toolCallExample() {
     
     // 创建带工具的助手
     const assistant = sdk.createAssistant({
-      modelId: 'gpt-4',
+      modelId: 'gpt-4o',
       systemPrompt: '你是一个旅行顾问，可以提供旅行建议并检查目的地的天气情况。',
       tools: tools,
       streaming: false

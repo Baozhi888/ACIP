@@ -175,7 +175,7 @@ class ModelInvocation {
         id: 'openai',
         name: 'OpenAI',
         apiEndpoint: 'https://api.openai.com/v1',
-        models: ['gpt-4', 'gpt-3.5-turbo']
+        models: ['gpt-4o', 'gpt-3.5-turbo']
       },
       {
         id: 'anthropic',
@@ -206,8 +206,8 @@ class ModelInvocation {
     
     const defaultModels = [
       {
-        id: 'gpt-4',
-        name: 'GPT-4',
+        id: 'gpt-4o',
+        name: 'gpt-4o',
         provider: 'openai',
         capabilities: ['chat', 'function-calling', 'vision'],
         contextWindow: 8192,

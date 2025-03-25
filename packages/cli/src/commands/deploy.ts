@@ -1,8 +1,8 @@
-import fs from 'fs-extra';
-import path from 'path';
-import chalk from 'chalk';
-import ora from 'ora';
 import { Command } from 'commander';
+import chalk from 'chalk';
+import fs from 'fs-extra';
+import ora from 'ora';
+import path from 'node:path';
 
 // 支持的环境类型
 const ENVIRONMENTS = ['production', 'staging', 'development'];
