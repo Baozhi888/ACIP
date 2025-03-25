@@ -1,4 +1,5 @@
 # ACIP (Adaptive Contextual Intelligence Protocol)
+![project logo](https://github.com/Baozhi888/ACIP/blob/main/acip2.png)
 
 ## Overview
 
