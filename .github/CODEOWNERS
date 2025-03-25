@@ -1,0 +1,24 @@
+# ACIP Project Code Owners
+# This file defines the code owners for the ACIP project.
+# Code owners are automatically requested for review on pull requests.
+
+# Default owners for everything in the repo
+* @project-maintainers
+
+# Core module owners
+/core/ @core-team
+
+# CLI package owners
+/packages/cli/ @cli-team
+
+# Documentation owners
+/docs/ @docs-team
+
+# Test owners
+/tests/ @test-team
+
+# Example owners
+/examples/ @example-team
+
+# Workflow and GitHub specific files
+/.github/ @admin-team 

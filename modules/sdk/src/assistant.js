@@ -25,7 +25,7 @@ class Assistant {
     
     // Initialize options with defaults
     this.options = {
-      modelId: options.modelId || 'gpt-4',
+      modelId: options.modelId || 'gpt-4o',
       temperature: options.temperature || 0.7,
       maxTokens: options.maxTokens || 2048,
       systemPrompt: options.systemPrompt || 'You are a helpful AI assistant.',

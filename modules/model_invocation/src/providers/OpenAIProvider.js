@@ -348,7 +348,7 @@ class OpenAIProvider extends BaseProvider {
   _determineModelCapabilities(modelId) {
     const capabilities = ['text-generation'];
     
-    if (modelId.startsWith('gpt-4')) {
+    if (modelId.startsWith('gpt-4o')) {
       capabilities.push('function-calling', 'high-intelligence');
       
       if (modelId.includes('vision')) {
@@ -373,8 +373,8 @@ class OpenAIProvider extends BaseProvider {
   _determineModelTags(modelId) {
     const tags = ['openai'];
     
-    if (modelId.startsWith('gpt-4')) {
-      tags.push('gpt-4', 'high-quality');
+    if (modelId.startsWith('gpt-4o')) {
+      tags.push('gpt-4o', 'high-quality');
       
       if (modelId.includes('vision')) {
         tags.push('vision', 'multimodal');

@@ -2,7 +2,7 @@
 
 ## 路线图和进度
 
-*最后更新: 2025-04-10*
+*最后更新: 2025-03-25*
 
 本文档概述了ACIP项目的开发计划、阶段和预期里程碑。
 
@@ -80,7 +80,7 @@ ACIP is currently in the **Alpha** stage of development, focusing on:
 - [x] Release initial SDK for JavaScript/TypeScript
 - [x] Create comprehensive getting started guide
 - [x] Build CLI tool for project scaffolding
-- [ ] Establish contribution workflow
+- [x] Establish contribution workflow
 - [x] Provide comprehensive API reference documentation
 
 ### Q3 2025: Core Functionality
@@ -232,6 +232,6 @@ Progress on this roadmap is tracked through:
 
 ---
 
-*Last updated: 2025-04-10*
+*Last updated: 2025-03-24*
 
 *Note: This roadmap represents our current plans and is subject to change as the project evolves and as we receive community feedback.* 

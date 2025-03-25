@@ -1,0 +1,29 @@
+{
+  "name": "my-acip-project",
+  "version": "0.1.0",
+  "description": "An ACIP (Adaptive Contextual Intelligence Protocol) project",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "acip",
+    "ai",
+    "contextual-intelligence"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@acip/sdk": "^0.1.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6",
+    "@types/node": "^20.4.2",
+    "ts-node": "^10.9.1"
+  }
+}

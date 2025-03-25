@@ -1,0 +1,50 @@
+# Set to true to add reviewers to pull requests
+addReviewers: true
+
+# Set to true to add assignees to pull requests
+addAssignees: false
+
+# A list of reviewers to be added to pull requests (GitHub user name)
+reviewers:
+  - maintainer1
+  - maintainer2
+  - maintainer3
+
+# A number of reviewers added to the pull request
+# Set 0 to add all the reviewers (default: 0)
+numberOfReviewers: 2
+
+# A list of assignees, overrides reviewers if set
+# assignees:
+#   - assignee1
+#   - assignee2
+
+# A number of assignees to add to the pull request
+# Set to 0 to add all of the assignees.
+# Uses numberOfReviewers if unset.
+# numberOfAssignees: 2
+
+# A list of keywords to be skipped the process that add reviewers if pull requests include it
+# skipKeywords:
+#   - wip
+#   - draft
+
+# Filter which files to include/exclude
+filterLabels:
+  # Include labels (OR condition)
+  include:
+    - bug
+    - enhancement
+    - documentation
+  # Exclude labels (NOT condition)
+  exclude:
+    - no-review
+
+# Assign PRs based on files changes
+fileTypesForAutomaticAssignment:
+  '**/*.ts':
+    - code-reviewers  # Special group for .ts files
+  'docs/**/*':
+    - doc-reviewers   # Special group for docs files
+  'packages/cli/**/*':
+    - cli-reviewers   # Special group for CLI package 

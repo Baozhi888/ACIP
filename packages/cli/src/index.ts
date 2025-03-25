@@ -2,9 +2,11 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
+import fs from 'fs-extra';
+import path from 'node:path';
 import updateNotifier from 'update-notifier';
 import boxen from 'boxen';
-import pkg from '../package.json' assert { type: 'json' };
+import pkg from '../package.json' with { type: 'json' };
 
 // 导入命令
 import initCommand from './commands/init.js';

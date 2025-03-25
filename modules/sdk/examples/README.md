@@ -38,7 +38,7 @@ const acip = require('@acip/sdk').init({
 async function main() {
   try {
     const response = await acip.modelInvocation.invoke({
-      modelId: 'gpt-4o',
+      modelId: 'gpt-4oo',
       messages: [
         { role: 'system', content: '你是一个有帮助的AI助手。' },
         { role: 'user', content: '解释什么是ACIP？' }
@@ -65,7 +65,7 @@ const acip = require('@acip/sdk').init({
 
 // 创建助手
 const assistant = acip.createAssistant({
-  modelId: 'gpt-4o',
+  modelId: 'gpt-4oo',
   systemPrompt: '你是一个专注于帮助用户解决编程问题的AI助手。',
   name: '编程助手'
 });

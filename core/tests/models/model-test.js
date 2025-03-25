@@ -186,8 +186,8 @@ function testAgentModel() {
   // Add model
   console.log('\nAdding AI model...');
   agent.addModel({
-    id: 'gpt-4',
-    name: 'GPT-4',
+    id: 'gpt-4o',
+    name: 'gpt-4o',
     version: '1.0',
     provider: 'OpenAI'
   });
@@ -198,7 +198,7 @@ function testAgentModel() {
   agent.updateConfiguration({
     maxTokens: 4096,
     temperature: 0.7,
-    modelPreference: 'gpt-4'
+    modelPreference: 'gpt-4o'
   });
   console.log('Configuration:', JSON.stringify(agent.configuration));
   

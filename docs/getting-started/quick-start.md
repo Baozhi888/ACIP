@@ -74,7 +74,7 @@ const sdk = acip.init({
 
 // 创建对话助手
 const assistant = sdk.createAssistant({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   systemPrompt: '你是一个友好、有用的AI助手。',
   name: '我的助手'
 });
@@ -116,7 +116,7 @@ const sdk = acip.init({
 
 // 创建对话助手（启用流式响应）
 const assistant = sdk.createAssistant({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   systemPrompt: '你是一个友好、有用的AI助手。',
   streaming: true  // 启用流式响应
 });
@@ -182,7 +182,7 @@ const tools = [
 
 // 创建带工具的助手
 const assistant = sdk.createAssistant({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   systemPrompt: '你是一个助手，可以查询天气信息。',
   tools: tools
 });
@@ -252,7 +252,7 @@ toolDemo();
 const sdk = acip.init({ 
   apiKey: 'your_api_key',      // API密钥
   cacheEnabled: true,          // 启用缓存
-  defaultModelId: 'gpt-4',     // 默认模型
+  defaultModelId: 'gpt-4o',     // 默认模型
   logger: {                    // 日志配置
     level: 'info'
   }
@@ -266,7 +266,7 @@ ACIP提供统一的模型调用接口，支持多种AI模型：
 ```javascript
 // 基本调用
 const response = await sdk.modelInvocation.invoke({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   messages: [
     { role: 'system', content: '你是一个有用的助手。' },
     { role: 'user', content: '解释什么是ACIP？' }
@@ -284,7 +284,7 @@ ACIP的Assistant类提供更高级的对话功能：
 ```javascript
 // 创建助手
 const assistant = sdk.createAssistant({
-  modelId: 'gpt-4',
+  modelId: 'gpt-4o',
   systemPrompt: '你是一个专家助手。',
   memory: true,          // 启用记忆
   memorySize: 10,        // 记住10轮对话

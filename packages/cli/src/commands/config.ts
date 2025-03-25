@@ -21,7 +21,7 @@ type ConfigKey = keyof ConfigSchema;
 
 export default function configCommand(program: Command): void {
   // 创建配置存储实例
-  const config = new Conf<ConfigSchema>({
+  const config = new Conf({
     projectName: 'acip',
     schema: {
       apiKey: {
@@ -29,13 +29,12 @@ export default function configCommand(program: Command): void {
       },
       defaultModel: {
         type: 'string',
-        default: 'gpt-4'
+        default: 'gpt-4o'
       },
       telemetryEnabled: {
         type: 'boolean',
         default: true
       },
-      // 用户自定义配置
       userSettings: {
         type: 'object',
         default: {}
@@ -63,7 +62,7 @@ export default function configCommand(program: Command): void {
       
       console.log('Examples:');
       console.log('  acip config get apiKey');
-      console.log('  acip config set defaultModel gpt-4');
+      console.log('  acip config set defaultModel gpt-4o');
       console.log('  acip config list');
       console.log('  acip config delete telemetryEnabled\n');
       

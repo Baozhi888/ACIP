@@ -158,7 +158,7 @@ ACIP核心通信通过以下协议实现：
   "content": {
     "action": "invoke",
     "parameters": {
-      "model": "gpt-4",
+      "model": "gpt-4o",
       "input": {
         "messages": [
           {"role": "user", "content": "Tell me about ACIP"}
@@ -243,7 +243,7 @@ ACIP核心通信通过以下协议实现：
     "code": "MODEL_UNAVAILABLE",
     "message": "The requested model is currently unavailable",
     "details": {
-      "modelId": "gpt-4",
+      "modelId": "gpt-4o",
       "reason": "rate_limit_exceeded"
     }
   },

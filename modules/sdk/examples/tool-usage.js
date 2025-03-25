@@ -79,7 +79,7 @@ async function main() {
     
     // 创建助手
     const assistant = sdk.createAssistant({
-      modelId: 'gpt-4',
+      modelId: 'gpt-4o',
       systemPrompt: '你是一个有用的AI助手，可以回答问题并使用工具帮助用户。当用户询问天气或需要数学计算时，请使用相应的工具来获取信息。',
       temperature: 0.7,
       maxTokens: 1024,
